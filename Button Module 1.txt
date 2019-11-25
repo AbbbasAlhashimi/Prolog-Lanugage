@@ -1,0 +1,110 @@
+group Button_name Abort_Txt, Detonate_Txt, hold_Txt, else_Txt,Different_Txt.
+group Button_color White, Red, Blue, Yellow,Different_color.
+/* Even though 1 Battery is not in the manual, it can be suitable for "non of the above" situation */
+group battery One, More_than_1, Two, More_than_2.
+group Button_lit Car_label, FRK_label, Another, Different_label.
+/*group strip Blue_stp,White_stp,Yellow_stp,Other_stp. */
+
+
+/* Text on Button */
+rule ask_ButtonName
+if ButtonName is unknown
+then ask ButtonName .
+question ButtonName
+What is the button name? ;
+choose from Button_name
+because I need to defuse the bobmb for you.
+
+/* Color of Button */
+rule ask_Bcolor
+if Bcolor is unknown
+then ask Bcolor .
+question Bcolor
+What color is it? ;
+choose from Button_color
+because I need to defuse the bobmb for you.
+
+/* Number of Batteries. */
+rule ask_Nbatteries
+if Nbatteries is unknown
+then ask Nbatteries .
+question Nbatteries
+How many Batteries are there? (Press right click and check the sides) ;
+choose from battery
+because I need to defuse the bobmb for you.
+
+/* Check Labels */
+rule ask_Txtlabel
+if Txtlabel is unknown
+then ask Txtlabel.
+question Txtlabel
+Which of the following match the Text label on the left side of the bomb? ;
+choose from Button_lit
+because I need to defuse the bobmb for you.
+
+/* Strip Colors - Part Two of the code
+rule ask_Scolor
+if Scolor is unknown
+then ask Scolor.
+question Scolor
+After pressing the button, What is the color of the strip? ;
+choose from strip 
+because I need to defuse the bobmb for you.
+*/
+
+
+/* ++++++ rules about buying chips ++++++++++++ */
+rule Option1
+if ButtonName is Abort_Txt
+and Bcolor is Blue
+then write('Hold the button and check the Instructions')
+and nl.
+
+
+rule Option2
+if Nbatteries is More_than_1
+and ButtonName is Detonate_Txt
+then write('press and immediately release the butto')
+and nl .
+
+rule Option3
+if Bcolor is White
+and Txtlabel is Car_label
+then write('Hold the button and check the Instructions')
+and nl .
+
+
+rule Option4
+if Nbatteries is More_than_2
+and Txtlabel is FRK_label
+then write('press and immediately release the butto')
+and nl .
+
+rule Option5
+if Bcolor is Yellow
+then write('Hold the button and check the Instructions')
+and nl .
+
+
+rule Option6
+if ButtonName is Red
+and ButtonName is hold_Txt
+then write('press and immediately release the button')
+and nl .
+
+rule op7
+if ButtonName is Different_Txt
+or Bcolor is Different_color
+or Txtlabel is Different_label
+then write('Hold the button and check the Instructions')
+
+
+
+/* start the program */
+ruleset Instructions
+contains all rules ;
+select rule using first come first served ;
+update ruleset by removing each selected rule ;
+initiate by doing restart .
+action go
+do invoke ruleset Instructions.
